@@ -88,7 +88,7 @@ public class IndividualService : IIndividualService
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task CreateIndividualAsync(IndividualDto dto, CancellationToken cancellationToken)
+    public async Task CreateIndividualAsync(IndividualCreateDto dto, CancellationToken cancellationToken)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 

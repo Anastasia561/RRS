@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 });
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IIndividualService, IndividualService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var app = builder.Build();
 

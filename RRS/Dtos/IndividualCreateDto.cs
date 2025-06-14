@@ -2,7 +2,7 @@
 
 namespace RRS.Dtos;
 
-public class IndividualUpdateDto
+public class IndividualCreateDto
 {
     [Required(ErrorMessage = "First name is required.")]
     [StringLength(30, ErrorMessage = "First name cannot be longer than 30 characters.")]
@@ -24,4 +24,8 @@ public class IndividualUpdateDto
     [Required(ErrorMessage = "Phone number is required.")]
     [RegularExpression(@"^\d{7,15}$", ErrorMessage = "Phone number must contain 7 to 15 digits.")]
     public string Phone { get; set; }
+
+    [Required(ErrorMessage = "PESEL is required.")]
+    [RegularExpression(@"^\d{11}$", ErrorMessage = "PESEL must contain exactly 11 digits.")]
+    public string Pesel { get; set; }
 }

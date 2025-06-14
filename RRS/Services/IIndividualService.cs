@@ -8,5 +8,5 @@ public interface IIndividualService
     public Task<IndividualDto> GetIndividualByIdAsync(int id, CancellationToken cancellationToken);
     public Task UpdateIndividualAsync(int id, IndividualUpdateDto dto, CancellationToken cancellationToken);
     public Task DeleteIndividualAsync(int id, CancellationToken cancellationToken);
-    public Task CreateIndividualAsync(IndividualDto dto, CancellationToken cancellationToken);
+    public Task CreateIndividualAsync(IndividualCreateDto dto, CancellationToken cancellationToken);
 }

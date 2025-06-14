@@ -1,8 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using RRS.Data;
+using RRS.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+builder.Services.AddDbContext<DatabaseContext>(opt =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Default");
+    opt.UseSqlServer(connectionString);
+});
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
 
@@ -14,5 +25,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.MapControllers();
 app.Run();

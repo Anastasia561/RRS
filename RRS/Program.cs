@@ -13,11 +13,15 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     var connectionString = builder.Configuration.GetConnectionString("Default");
     opt.UseSqlServer(connectionString);
 });
+builder.Services.AddHttpClient<ExchangeRateService>();
+
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IIndividualService, IndividualService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ISoftwareService, SoftwareService>();
 builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IRevenueService, RevenueService>();
+builder.Services.AddScoped<IExchangeRateService, ExchangeRateService>();
 
 var app = builder.Build();
 

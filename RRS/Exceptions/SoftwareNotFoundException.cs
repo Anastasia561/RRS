@@ -2,7 +2,7 @@
 
 public class SoftwareNotFoundException : Exception
 {
-    public SoftwareNotFoundException(int id)
+    public SoftwareNotFoundException(int? id)
         : base($"Software with ID {id} not found.")
     {
     }

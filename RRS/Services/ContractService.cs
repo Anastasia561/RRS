@@ -59,7 +59,8 @@ public class ContractService : IContractService
 
         if (_context.Contracts.Any(c => c.SoftwareId == dto.SoftwareId
                                         && c.Version.Number == dto.SoftwareVersionId && c.EndDate > dto.StartDate))
-            throw new ContractIsActiveException(clientId);
+            throw new ContractException(
+                $"Client with id {clientId} has already active contract for this version of software");
 
         foreach (var name in dto.Updates.Where(name => !_context.Updates.Any(u => u.Name == name)))
         {
@@ -114,5 +115,28 @@ public class ContractService : IContractService
             await transaction.RollbackAsync(cancellationToken);
             throw;
         }
+    }
+
+    public async Task PayForContract(PaymentDto dto, int contractId, CancellationToken cancellationToken)
+    {
+        if (!_context.Contracts.Any(c => c.Id == contractId))
+            throw new ContractException($"Contract with {contractId} not found");
+
+        if (_context.Contracts.Any(c => (c.Id == contractId && c.IsSigned == 1) ||
+                                        (c.Id == contractId && c.EndDate < DateTime.Now)))
+            throw new ContractException($"Contract with id {contractId} is no longer available for payment");
+
+        if (_context.Contracts.Any(c => c.Id == contractId &&
+                                        c.FinalPrice - c.Payments.Sum(p => p.Amount) < dto.Amount))
+            throw new ContractException($"Amount payed for contract with id {contractId} is too big");
+
+
+        _context.Payments.Add(new Payment()
+        {
+            Amount = dto.Amount,
+            ContractId = contractId,
+            Date = DateTime.Now
+        });
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -36,10 +36,26 @@ public class ContractsController : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        
+
         try
         {
             await _contractService.CreateContract(clientId, dto, cancellationToken);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("{contractId}/pay")]
+    public async Task<IActionResult> PayForContract(PaymentDto dto, int contractId, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        try
+        {
+            await _contractService.PayForContract(dto, contractId, cancellationToken);
             return NoContent();
         }
         catch (Exception e)

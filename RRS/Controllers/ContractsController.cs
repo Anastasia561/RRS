@@ -31,7 +31,7 @@ public class ContractsController : ControllerBase
     }
 
     [HttpPost("{clientId}/create")]
-    public async Task<IActionResult> CreateContract(int clientId, ContractCreateDto dto,
+    public async Task<IActionResult> CreateContractAsync(int clientId, ContractCreateDto dto,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -39,7 +39,7 @@ public class ContractsController : ControllerBase
 
         try
         {
-            await _contractService.CreateContract(clientId, dto, cancellationToken);
+            await _contractService.CreateContractAsync(clientId, dto, cancellationToken);
             return NoContent();
         }
         catch (Exception e)
@@ -49,18 +49,33 @@ public class ContractsController : ControllerBase
     }
 
     [HttpPost("{contractId}/pay")]
-    public async Task<IActionResult> PayForContract(PaymentDto dto, int contractId, CancellationToken cancellationToken)
+    public async Task<IActionResult> PayForContractAsync(PaymentDto dto, int contractId,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         try
         {
-            await _contractService.PayForContract(dto, contractId, cancellationToken);
+            await _contractService.PayForContractAsync(dto, contractId, cancellationToken);
             return NoContent();
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
+    }
+
+    [HttpDelete("/pastDue")]
+    public async Task<IActionResult> DeletePastDueContractsAsync(CancellationToken cancellationToken)
+    {
+        await _contractService.DeletePastDueContractsAsync(cancellationToken);
+        return NoContent();
+    }
+
+    [HttpPut("/sign")]
+    public async Task<IActionResult> MarkContractsAsSignedAsync(CancellationToken cancellationToken)
+    {
+        await _contractService.MarkContractsAsSignedAsync(cancellationToken);
+        return NoContent();
     }
 }

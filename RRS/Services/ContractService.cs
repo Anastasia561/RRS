@@ -46,7 +46,7 @@ public class ContractService : IContractService
         }).ToListAsync(cancellationToken);
     }
 
-    public async Task CreateContract(int clientId, ContractCreateDto dto, CancellationToken cancellationToken)
+    public async Task CreateContractAsync(int clientId, ContractCreateDto dto, CancellationToken cancellationToken)
     {
         if (!_context.Clients.Any(c => c.Id == clientId))
             throw new ClientNotFoundException(clientId);
@@ -117,7 +117,7 @@ public class ContractService : IContractService
         }
     }
 
-    public async Task PayForContract(PaymentDto dto, int contractId, CancellationToken cancellationToken)
+    public async Task PayForContractAsync(PaymentDto dto, int contractId, CancellationToken cancellationToken)
     {
         if (!_context.Contracts.Any(c => c.Id == contractId))
             throw new ContractException($"Contract with {contractId} not found");
@@ -137,6 +137,42 @@ public class ContractService : IContractService
             ContractId = contractId,
             Date = DateTime.Now
         });
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeletePastDueContractsAsync(CancellationToken cancellationToken)
+    {
+        var contractsToDelete = _context.Contracts
+            .Include(c => c.Payments)
+            .Include(c => c.Updates)
+            .Where(c => c.EndDate < DateTime.Now && c.IsSigned == 0)
+            .ToList();
+
+        foreach (var contract in contractsToDelete)
+        {
+            _context.Payments.RemoveRange(contract.Payments);
+            contract.Updates.Clear();
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        _context.Contracts.RemoveRange(contractsToDelete);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task MarkContractsAsSignedAsync(CancellationToken cancellationToken)
+    {
+        var contractsToSign = _context.Contracts
+            .Include(c => c.Payments)
+            .Where(c => c.EndDate >= DateTime.Now
+                        && c.IsSigned == 0
+                        && Math.Abs(c.Payments.Sum(p => p.Amount) - c.FinalPrice) < 0.01m)
+            .ToList();
+
+        foreach (var contract in contractsToSign)
+        {
+            contract.IsSigned = 1;
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

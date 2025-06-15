@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RRS.Exceptions;
 using RRS.Services;
 
@@ -15,6 +16,7 @@ public class RevenuesController : ControllerBase
         _revenueService = revenueService;
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("total")]
     public async Task<IActionResult> GetTotalRevenueAsync([FromQuery] int? softwareId,
         [FromQuery] string? currency,
@@ -33,6 +35,7 @@ public class RevenuesController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("predicted")]
     public async Task<IActionResult> GetPredictedRevenueAsync([FromQuery] int? softwareId,
         [FromQuery] string? currency,

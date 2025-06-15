@@ -36,6 +36,8 @@ public partial class DatabaseContext : DbContext
     public virtual DbSet<Update> Updates { get; set; }
 
     public virtual DbSet<Version> Versions { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<Employee> Employees { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -52,6 +54,42 @@ public partial class DatabaseContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Name)
                 .HasMaxLength(30)
+                .HasColumnName("name");
+        });
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("employee_pk");
+
+            entity.ToTable("employee");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Login)
+                .HasMaxLength(10)
+                .HasColumnName("login");
+            entity.Property(e => e.Password)
+                .HasMaxLength(20)
+                .HasColumnName("password");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("employee_role");
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("role_pk");
+
+            entity.ToTable("role");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(20)
                 .HasColumnName("name");
         });
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RRS.Dtos;
 using RRS.Exceptions;
 using RRS.Services;
@@ -16,6 +17,7 @@ public class ContractsController : ControllerBase
         _contractService = contractService;
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("{clientId}/all")]
     public async Task<IActionResult> GetAllForClientAsync(int clientId, CancellationToken cancellationToken)
     {
@@ -30,6 +32,7 @@ public class ContractsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "User")]
     [HttpPost("{clientId}/create")]
     public async Task<IActionResult> CreateContractAsync(int clientId, ContractCreateDto dto,
         CancellationToken cancellationToken)
@@ -48,6 +51,7 @@ public class ContractsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "User")]
     [HttpPost("{contractId}/pay")]
     public async Task<IActionResult> PayForContractAsync(PaymentDto dto, int contractId,
         CancellationToken cancellationToken)
@@ -65,6 +69,7 @@ public class ContractsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "User")]
     [HttpDelete("/pastDue")]
     public async Task<IActionResult> DeletePastDueContractsAsync(CancellationToken cancellationToken)
     {
@@ -72,6 +77,7 @@ public class ContractsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "User")]
     [HttpPut("/sign")]
     public async Task<IActionResult> MarkContractsAsSignedAsync(CancellationToken cancellationToken)
     {

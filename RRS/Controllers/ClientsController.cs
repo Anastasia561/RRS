@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RRS.Dtos;
 using RRS.Exceptions;
 using RRS.Services;
@@ -18,6 +19,7 @@ public class ClientsController : ControllerBase
         _companyService = companyService;
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("individuals/all")]
     public async Task<IActionResult> GetAllIndividualsAsync(CancellationToken cancellationToken)
     {
@@ -25,6 +27,7 @@ public class ClientsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("individuals/{id}")]
     public async Task<IActionResult> GetIndividualByIdAsync(int id, CancellationToken cancellationToken)
     {
@@ -38,6 +41,7 @@ public class ClientsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("individuals/{id}/update")]
     public async Task<IActionResult> UpdateIndividualAsync(int id, IndividualUpdateDto individual,
         CancellationToken cancellationToken)
@@ -58,6 +62,7 @@ public class ClientsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("individuals/{id}")]
     public async Task<IActionResult> DeleteIndividualAsync(int id, CancellationToken cancellationToken)
     {
@@ -72,6 +77,7 @@ public class ClientsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("individuals/create")]
     public async Task<IActionResult> CreateIndividualAsync(IndividualCreateDto dto, CancellationToken cancellationToken)
     {
@@ -84,6 +90,7 @@ public class ClientsController : ControllerBase
         return Created();
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("companies/all")]
     public async Task<IActionResult> GetAllCompaniesAsync(CancellationToken cancellationToken)
     {
@@ -91,6 +98,7 @@ public class ClientsController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("companies/{id}")]
     public async Task<IActionResult> GetCompanyByIdAsync(int id, CancellationToken cancellationToken)
     {
@@ -104,6 +112,7 @@ public class ClientsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("companies/{id}/update")]
     public async Task<IActionResult> UpdateCompanyAsync(int id, CompanyUpdateDto dto,
         CancellationToken cancellationToken)
@@ -124,6 +133,7 @@ public class ClientsController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("companies/create")]
     public async Task<IActionResult> CreateCompanyAsync(CompanyCreateDto dto, CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RRS.Services;
 
 namespace RRS.Controllers;
@@ -14,6 +15,7 @@ public class SoftwaresController : ControllerBase
         _softwareService = softwareService;
     }
 
+    [Authorize(Roles = "User")]
     [HttpGet("all")]
     public async Task<IActionResult> GetSoftwareAsync(CancellationToken cancellationToken)
     {

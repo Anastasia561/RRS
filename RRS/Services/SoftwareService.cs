@@ -27,13 +27,14 @@ public class SoftwareService : ISoftwareService
                 Number = s.CurrentVersion.Number,
                 ReleaseDate = s.CurrentVersion.ReleaseDate
             },
-            Discounts = s.Discounts.Where(d => d.EndDate > DateTime.Now).Select(d => new DiscountDto()
-            {
-                Name = d.Name,
-                Amount = d.Value,
-                EndDate = d.EndDate,
-                StartDate = d.StartDate
-            }).ToList()
+            Discounts = s.Discounts.Where(d => d.EndDate > DateTime.Now && d.IsUpfront == 1).Select(d =>
+                new DiscountDto()
+                {
+                    Name = d.Name,
+                    Amount = d.Value,
+                    EndDate = d.EndDate,
+                    StartDate = d.StartDate
+                }).ToList()
         }).ToListAsync(cancellationToken);
     }
 }

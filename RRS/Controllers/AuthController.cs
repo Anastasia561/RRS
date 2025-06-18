@@ -32,4 +32,18 @@ public class AuthController : ControllerBase
             return Unauthorized(e.Message);
         }
     }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _employeeService.RegisterEmployeeAsync(dto, cancellationToken);
+            return Ok("Registration succeed");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

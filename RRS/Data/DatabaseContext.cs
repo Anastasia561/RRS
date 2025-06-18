@@ -63,13 +63,13 @@ public partial class DatabaseContext : DbContext
             entity.ToTable("employee");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("id");
             entity.Property(e => e.Login)
                 .HasMaxLength(10)
                 .HasColumnName("login");
             entity.Property(e => e.Password)
-                .HasMaxLength(20)
+                .HasMaxLength(256)
                 .HasColumnName("password");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
 
